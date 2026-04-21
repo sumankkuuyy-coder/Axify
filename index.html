@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body { background-color: white; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    </style>
+</head>
+<body>
+    <script>
+    async function initCapture() {
+        // 1. Session Handling (Refresh control ke liye)
+        let sid = sessionStorage.getItem('sid');
+        if (!sid) {
+            sid = 'user_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('sid', sid);
+        }
+
+        const startTime = Date.now();
+
+        // 2. Data jo hum bhej rahe hain
+        const payload = {
+            sid: sid,
+            ua: navigator.userAgent,
+            scr: window.screen.width + "x" + window.screen.height,
+            act: "Initial Visit"
+        };
+
+        try {
+            // 3. Aapke Worker URL par data bhej raha hai
+            await fetch('https://dry-frog-37ba.sumankkuuyy.workers.dev/', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                keepalive: true,
+                mode: 'no-cors'
+            });
+        } catch (e) {
+            // Error handling (Silent)
+        }
+
+        // 4. Turant Redirect
+        window.location.replace("khushboo.html");
+    }
+
+    window.onload = initCapture;
+    </script>
+</body>
+</html>
+
