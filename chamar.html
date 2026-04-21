@@ -3,13 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | Mobile</title>
     <style>
         :root { --maroon: #841743; --white: #ffffff; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--white); margin: 0; padding: 15px; font-family: 'Segoe UI', Arial, sans-serif; }
+        
+        body { 
+            background-color: #f0f0f0; /* PC par side mein grey dikhega */
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+        }
 
-        /* Header: Title Left, Count Right */
+        /* Mobile Container: PC par kholne par bhi mobile jaisa dikhega */
+        .mobile-view {
+            width: 100%;
+            max-width: 450px; /* Standard Mobile Width */
+            min-height: 100vh;
+            background-color: var(--white);
+            padding: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
         .admin-header { 
             display: flex; 
             justify-content: space-between; 
@@ -23,10 +40,9 @@
 
         .device-list { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Axis Maroon Card - No Border */
         .card {
             background: var(--maroon);
-            padding: 20px;
+            padding: 18px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
@@ -37,9 +53,9 @@
             border: none;
         }
 
-        .ip-info { font-weight: bold; font-size: 17px; font-family: monospace; }
-        .loc-info { font-size: 12px; opacity: 0.9; margin-top: 5px; font-weight: 500; }
-        .time-tag { font-size: 10px; background: rgba(0,0,0,0.25); padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+        .ip-info { font-weight: bold; font-size: 16px; font-family: monospace; }
+        .loc-info { font-size: 11px; opacity: 0.9; margin-top: 4px; font-weight: 500; }
+        .time-tag { font-size: 10px; background: rgba(0,0,0,0.25); padding: 4px 8px; border-radius: 4px; font-weight: bold; min-width: 75px; text-align: center; }
 
         /* Popup Modal */
         .modal {
@@ -48,7 +64,7 @@
             padding: 20px;
         }
         .modal-content {
-            background: white; width: 100%; max-width: 380px; border-radius: 12px;
+            background: white; width: 95%; max-width: 380px; border-radius: 12px;
             overflow: hidden; animation: popUp 0.2s ease;
         }
         @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -56,7 +72,7 @@
         .modal-header { background: var(--maroon); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 15px; }
         .modal-body { padding: 5px 0; }
         
-        .detail-row { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; }
+        .detail-row { padding: 12px 20px; border-bottom: 1px solid #f0f0f0; }
         .detail-row:last-child { border-bottom: none; }
         .label { color: var(--maroon); font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; }
         .value { color: #333; font-size: 13px; word-break: break-all; font-weight: 600; }
@@ -69,33 +85,43 @@
 </head>
 <body>
 
-<div class="admin-header">
-    <div class="header-title">Live Tracking</div>
-    <div class="count-badge" id="totalCount">0</div>
-</div>
-
-<div class="device-list" id="logsContainer">
+<div class="mobile-view">
+    <div class="admin-header">
+        <div class="header-title">Live Tracking</div>
+        <div class="count-badge" id="totalCount">0</div>
     </div>
 
-<div class="modal" id="detailsModal">
-    <div class="modal-content">
-        <div class="modal-header">DETAILS</div>
-        <div id="modalBody" class="modal-body"></div>
-        <div class="close-btn" onclick="closePopup()">CLOSE</div>
+    <div class="device-list" id="logsContainer"></div>
+
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">DETAILS</div>
+            <div id="modalBody" class="modal-body"></div>
+            <div class="close-btn" onclick="closePopup()">CLOSE</div>
+        </div>
     </div>
 </div>
 
 <script>
-    // Updated Worker URL
     const API_URL = 'https://sweet-heart-ca97.sumankkuuyy.workers.dev/';
     let currentData = [];
+
+    // Kolkata Time Formatter (IST)
+    const kolkataTime = (dateStr) => {
+        return new Date(dateStr).toLocaleTimeString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
 
     async function fetchLogs() {
         try {
             const res = await fetch(API_URL);
             let data = await res.json();
             
-            // Newest on top
+            // Newest on Top
             data.sort((a, b) => new Date(b.last_activity) - new Date(a.last_activity));
             
             currentData = data;
@@ -110,7 +136,7 @@
                         <div class="ip-info">${user.ip}</div>
                         <div class="loc-info">${user.location}</div>
                     </div>
-                    <div class="time-tag">${new Date(user.last_activity).toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}</div>
+                    <div class="time-tag">${kolkataTime(user.last_activity)}</div>
                 </div>`;
             });
             container.innerHTML = html;
@@ -122,8 +148,8 @@
         const body = document.getElementById('modalBody');
         body.innerHTML = `
             <div class="detail-row"><span class="label">IP Address</span><span class="value">${user.ip}</span></div>
-            <div class="detail-row"><span class="label">Real Location</span><span class="value">${user.location}</span></div>
-            <div class="detail-row"><span class="label">Screen</span><span class="value">${user.screen_res || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Location</span><span class="value">${user.location}</span></div>
+            <div class="detail-row"><span class="label">Last Active (IST)</span><span class="value">${kolkataTime(user.last_activity)}</span></div>
             <div class="detail-row"><span class="label">Active Seconds</span><span class="value">${user.time_spent}s</span></div>
             <div class="detail-row"><span class="label">User Agent</span><span class="value">${user.user_agent}</span></div>
             <div class="detail-row"><span class="label">Session ID</span><span class="value">${user.sid}</span></div>
