@@ -2,115 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axis Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Dashboard</title>
     <style>
-        :root { 
-            --axis-maroon: #841743; 
-            --bg-white: #ffffff;
-            --light-gray: #f4f4f4;
-            --text-dark: #333333;
+        :root { --maroon: #841743; --white: #ffffff; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--white); margin: 0; padding: 15px; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        /* Header: Title Left, Count Right */
+        .admin-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 5px 15px 5px;
+            border-bottom: 2px solid var(--maroon);
+            margin-bottom: 20px;
         }
-        * { box-sizing: border-box; font-family: 'Open Sans', Helvetica, Arial, sans-serif; }
-        body { background-color: var(--bg-white); margin: 0; padding: 10px; color: var(--text-dark); }
-        
-        /* Top Spacer */
-        .top-spacer { height: 15px; }
+        .header-title { color: var(--maroon); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .count-badge { background: var(--maroon); color: white; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
-        .device-container { display: flex; flex-direction: column; gap: 12px; }
+        .device-list { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Axis Maroon Card UI */
-        .device-card {
-            background: var(--bg-white); 
-            border: 1px solid var(--axis-maroon); 
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(132, 23, 67, 0.1);
-            transition: 0.3s;
-            overflow: hidden;
+        /* Axis Maroon Card - No Border */
+        .card {
+            background: var(--maroon);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(132, 23, 67, 0.2);
+            cursor: pointer;
+            border: none;
         }
-        
-        .card-main { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Text Axis Maroon */
-        .ip-addr { color: var(--axis-maroon); font-weight: 700; font-size: 17px; }
-        .loc-brief { font-size: 13px; color: #555; margin-top: 3px; font-weight: 500; }
-        
-        .status-info { text-align: right; }
-        .live-indicator { font-size: 10px; color: var(--axis-maroon); font-weight: 800; border: 1px solid var(--axis-maroon); padding: 2px 5px; border-radius: 3px; margin-bottom: 5px; display: inline-block; }
-        .time-stamp { font-size: 11px; color: #888; display: block; }
 
-        /* Details Grid - Axis Maroon Theme */
-        .details-grid {
-            display: none; grid-template-columns: 1fr 1fr; gap: 1px;
-            background: var(--axis-maroon); /* Border lines between grid items */
+        .ip-info { font-weight: bold; font-size: 17px; font-family: monospace; }
+        .loc-info { font-size: 12px; opacity: 0.9; margin-top: 5px; font-weight: 500; }
+        .time-tag { font-size: 10px; background: rgba(0,0,0,0.25); padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+
+        /* Popup Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center;
+            padding: 20px;
         }
-        .grid-item { background: #fffcfd; padding: 12px; font-size: 12px; }
-        .label { color: var(--axis-maroon); font-size: 10px; font-weight: 700; display: block; margin-bottom: 4px; text-transform: uppercase; }
-        .val { color: var(--text-dark); word-break: break-all; font-weight: 600; }
+        .modal-content {
+            background: white; width: 100%; max-width: 380px; border-radius: 12px;
+            overflow: hidden; animation: popUp 0.2s ease;
+        }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* Active State */
-        .device-card.open .details-grid { display: grid; }
-        .device-card.open { border-width: 2px; box-shadow: 0 4px 12px rgba(132, 23, 67, 0.2); }
+        .modal-header { background: var(--maroon); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 15px; }
+        .modal-body { padding: 5px 0; }
+        
+        .detail-row { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; }
+        .detail-row:last-child { border-bottom: none; }
+        .label { color: var(--maroon); font-size: 9px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .value { color: #333; font-size: 13px; word-break: break-all; font-weight: 600; }
 
-        /* Footer Count */
-        .footer-info { text-align: center; padding: 30px; font-size: 12px; color: var(--axis-maroon); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .close-btn { 
+            background: var(--maroon); color: white; text-align: center; 
+            padding: 16px; cursor: pointer; font-weight: bold; font-size: 14px; text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
-<div class="top-spacer"></div>
+<div class="admin-header">
+    <div class="header-title">Live Tracking</div>
+    <div class="count-badge" id="totalCount">0</div>
+</div>
 
-<div class="device-container" id="logs">
+<div class="device-list" id="logsContainer">
     </div>
 
-<div class="footer-info" id="counter">Connecting to Axis Secure Server...</div>
+<div class="modal" id="detailsModal">
+    <div class="modal-content">
+        <div class="modal-header">DETAILS</div>
+        <div id="modalBody" class="modal-body"></div>
+        <div class="close-btn" onclick="closePopup()">CLOSE</div>
+    </div>
+</div>
 
 <script>
-    const API = 'https://dry-frog-37ba.sumankkuuyy.workers.dev/';
+    // Updated Worker URL
+    const API_URL = 'https://sweet-heart-ca97.sumankkuuyy.workers.dev/';
+    let currentData = [];
 
-    async function updateDashboard() {
+    async function fetchLogs() {
         try {
-            const res = await fetch(API);
-            const data = await res.json();
-            const container = document.getElementById('logs');
-            document.getElementById('counter').innerText = `Total Records Found: ${data.length}`;
+            const res = await fetch(API_URL);
+            let data = await res.json();
+            
+            // Newest on top
+            data.sort((a, b) => new Date(b.last_activity) - new Date(a.last_activity));
+            
+            currentData = data;
+            document.getElementById('totalCount').innerText = data.length;
 
-            // Check which cards are currently open
-            const openIds = Array.from(document.querySelectorAll('.device-card.open')).map(el => el.dataset.sid);
-
+            const container = document.getElementById('logsContainer');
             let html = '';
-            data.forEach(user => {
-                const isOpen = openIds.includes(user.sid) ? 'open' : '';
+            data.forEach((user, index) => {
                 html += `
-                <div class="device-card ${isOpen}" data-sid="${user.sid}" onclick="this.classList.toggle('open')">
-                    <div class="card-main">
-                        <div>
-                            <div class="ip-addr">${user.ip}</div>
-                            <div class="loc-brief">${user.location}</div>
-                        </div>
-                        <div class="status-info">
-                            <div class="live-indicator">ACTIVE</div>
-                            <div class="time-stamp">${new Date(user.last_activity).toLocaleTimeString()}</div>
-                        </div>
+                <div class="card" onclick="showPopup(${index})">
+                    <div>
+                        <div class="ip-info">${user.ip}</div>
+                        <div class="loc-info">${user.location}</div>
                     </div>
-                    <div class="details-grid">
-                        <div class="grid-item"><span class="label">User Location</span><span class="val">${user.location}</span></div>
-                        <div class="grid-item"><span class="label">Resolution</span><span class="val">${user.screen_res || 'N/A'}</span></div>
-                        <div class="grid-item"><span class="label">Session Time</span><span class="val">${user.time_spent}s</span></div>
-                        <div class="grid-item"><span class="label">Ref ID</span><span class="val">${user.sid}</span></div>
-                        <div class="grid-item" style="grid-column: span 2;"><span class="label">System Fingerprint</span><span class="val">${user.user_agent}</span></div>
-                    </div>
+                    <div class="time-tag">${new Date(user.last_activity).toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}</div>
                 </div>`;
             });
             container.innerHTML = html;
-        } catch (e) {
-            console.log("Searching for sessions...");
-        }
+        } catch (e) { console.log("Updating logs..."); }
     }
 
-    // Auto-refresh every 2 seconds
-    setInterval(updateDashboard, 2000);
-    updateDashboard();
+    function showPopup(index) {
+        const user = currentData[index];
+        const body = document.getElementById('modalBody');
+        body.innerHTML = `
+            <div class="detail-row"><span class="label">IP Address</span><span class="value">${user.ip}</span></div>
+            <div class="detail-row"><span class="label">Real Location</span><span class="value">${user.location}</span></div>
+            <div class="detail-row"><span class="label">Screen</span><span class="value">${user.screen_res || 'N/A'}</span></div>
+            <div class="detail-row"><span class="label">Active Seconds</span><span class="value">${user.time_spent}s</span></div>
+            <div class="detail-row"><span class="label">User Agent</span><span class="value">${user.user_agent}</span></div>
+            <div class="detail-row"><span class="label">Session ID</span><span class="value">${user.sid}</span></div>
+        `;
+        document.getElementById('detailsModal').style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById('detailsModal').style.display = 'none';
+    }
+
+    setInterval(fetchLogs, 2000);
+    fetchLogs();
 </script>
 
 </body>
